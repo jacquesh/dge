@@ -1,11 +1,15 @@
 #include "dge_util.h"
 
+#ifdef _MSC_VER // Check for MSVC
+#pragma warning(disable: 4146) // unary minus applied to unsigned type (in randint)
+#endif
+
 // Returns a random, uniformly distributed, unsigned 32-bit integer
 uint32 dge::randint(dge::RNGState* rng)
 {
     uint64 oldstate = rng->state;
     rng->state = oldstate * 6364136223846793005ULL + (rng->inc|1);
-    uint32 xorshifted = ((oldstate >> 18u) ^ oldstate) >> 27u;
+    uint32 xorshifted = (uint32)(((oldstate >> 18u) ^ oldstate) >> 27u);
     uint32 rot = oldstate >> 59u;
     return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }

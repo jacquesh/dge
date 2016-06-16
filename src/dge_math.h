@@ -2,7 +2,6 @@
 #define DGE_MATH_H
 
 #include "dge.h"
-#include <math.h>
 #include <stdlib.h>
 
 #define ROOTTWO 1.4142136f

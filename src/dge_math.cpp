@@ -1,5 +1,7 @@
 #include "dge_math.h"
 
+#include <math.h>
+
 // ==============================
 // dge::Vector2 method implementations
 // ==============================
