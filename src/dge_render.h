@@ -21,10 +21,13 @@ namespace dge
       const char* title;
     };
 
-    struct CameraState
+    struct Camera2D
     {
       Vector2 position;
       Vector2 size;
+
+      Vector2 screenToWorldLoc(Vector2 cameraLoc);
+      Vector2 worldToScreenLoc(Vector2 worldLoc);
     };
 
 #define glPrintError(alwaysPrint) dge::__glPrintError(__FILE__, __LINE__, alwaysPrint)
@@ -75,16 +78,13 @@ namespace dge
 
     void loadDefaultShaders();
     void loadTextRenderer();
-    void updateShaderCameraState(dge::CameraState camera, GLuint shader);
+    void updateShaderCamera(Camera2D camera, GLuint shader);
 
-    Vector2 screenToWorldPoint(dge::CameraState camera, Vector2 point);
-    Vector2 worldToScreenPoint(dge::CameraState camera, Vector2 point);
-
-    void drawLine2D(dge::CameraState camera, Vector2 fromLoc, Vector2 toLoc, Vector4 color);
-    void renderString(dge::CameraState camera, const char* string, int length, Vector2 position, float size, Vector4 color);
-    void renderQuad(dge::CameraState camera, Vector2 centre, Vector2 size, float rotation, Vector4 color);
-    void renderSprite(dge::CameraState camera, GLuint textureID, Vector2 position, float rotation, Vector2 size, Vector4 color);
-    void renderSprite(dge::CameraState camera, GLuint textureID, Vector2 position, float rotation, Vector2 size);
+    void drawLine2D(Camera2D camera, Vector2 fromLoc, Vector2 toLoc, Vector4 color);
+    void renderString(Camera2D camera, const char* string, int length, Vector2 position, float size, Vector4 color);
+    void renderQuad(Camera2D camera, Vector2 centre, Vector2 size, float rotation, Vector4 color);
+    void renderSprite(Camera2D camera, GLuint textureID, Vector2 position, float rotation, Vector2 size, Vector4 color);
+    void renderSprite(Camera2D camera, GLuint textureID, Vector2 position, float rotation, Vector2 size);
 }
 
 #endif

@@ -12,6 +12,9 @@
 #include "dge_math.h"
 #include "dge_debug.h"
 
+namespace dge
+{
+
 GLuint textTexture;
 GLuint textVAO;
 GLuint textShader;
@@ -34,7 +37,7 @@ GLuint texCoordBuffer;
 // TODO: Some interesting notes: https://hero.handmadedev.org/forum/code-discussion/916-opengl-renderer-questions
 // TODO: More reading ("buffer orphaning"?): https://www.reddit.com/r/gamedev/comments/3y1va8/sdl2_c_tile_map_most_efficient_way_to_render_lots/
 
-GLuint dge::loadShader(const char* shaderFilename, GLenum shaderType)
+GLuint loadShader(const char* shaderFilename, GLenum shaderType)
 {
     SDL_RWops* shaderFile = SDL_RWFromFile(shaderFilename, "r");
     if(shaderFile == nullptr)
@@ -72,11 +75,11 @@ GLuint dge::loadShader(const char* shaderFilename, GLenum shaderType)
     return shader;
 }
 
-GLuint dge::loadShaderProgram(const char* vertShaderFilename,
+GLuint loadShaderProgram(const char* vertShaderFilename,
                              const char* fragShaderFilename)
 {
-    GLuint vertShader = dge::loadShader(vertShaderFilename, GL_VERTEX_SHADER);
-    GLuint fragShader = dge::loadShader(fragShaderFilename, GL_FRAGMENT_SHADER);
+    GLuint vertShader = loadShader(vertShaderFilename, GL_VERTEX_SHADER);
+    GLuint fragShader = loadShader(fragShaderFilename, GL_FRAGMENT_SHADER);
 
     // TODO: Handle GLerrors
     GLuint program = glCreateProgram();
@@ -103,13 +106,13 @@ GLuint dge::loadShaderProgram(const char* vertShaderFilename,
     return program;
 }
 
-GLuint dge::loadShaderProgram(const char* vertShaderFilename,
+GLuint loadShaderProgram(const char* vertShaderFilename,
                              const char* geomShaderFilename,
                              const char* fragShaderFilename)
 {
-    GLuint vertShader = dge::loadShader(vertShaderFilename, GL_VERTEX_SHADER);
-    GLuint geomShader = dge::loadShader(geomShaderFilename, GL_GEOMETRY_SHADER);
-    GLuint fragShader = dge::loadShader(fragShaderFilename, GL_FRAGMENT_SHADER);
+    GLuint vertShader = loadShader(vertShaderFilename, GL_VERTEX_SHADER);
+    GLuint geomShader = loadShader(geomShaderFilename, GL_GEOMETRY_SHADER);
+    GLuint fragShader = loadShader(fragShaderFilename, GL_FRAGMENT_SHADER);
 
     GLuint program = glCreateProgram();
     glAttachShader(program, vertShader);
@@ -138,7 +141,7 @@ GLuint dge::loadShaderProgram(const char* vertShaderFilename,
     return program;
 }
 
-bool32 dge::initRenderer(SDL_Window* window)
+bool32 initRenderer(SDL_Window* window)
 {
     SDL_GLContext glc = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, glc);
@@ -154,7 +157,7 @@ bool32 dge::initRenderer(SDL_Window* window)
     return true;
 }
 
-void dge::loadTexture(const char* fileName, GLuint textureID)
+void loadTexture(const char* fileName, GLuint textureID)
 {
     int imageWidth;
     int imageHeight;
@@ -211,20 +214,20 @@ void dge::loadTexture(const char* fileName, GLuint textureID)
 
 // NOTE: This is purely a convenience function so that you need to understand
 //       less of this file in order to use it.
-void dge::allocateAndLoadTexture(const char* fileName, GLuint* textureID)
+void allocateAndLoadTexture(const char* fileName, GLuint* textureID)
 {
     glGenTextures(1, textureID);
-    dge::loadTexture(fileName, *textureID);
+    loadTexture(fileName, *textureID);
 }
 
-void dge::loadTextRenderer()
+void loadTextRenderer()
 {
-    textShader = dge::loadShaderProgram("resources/shaders/sprite.vsh",
+    textShader = loadShaderProgram("resources/shaders/sprite.vsh",
                                         "resources/shaders/sprite.fsh");
     GLint positionLoc = glGetAttribLocation(textShader, "position");
 
     glGenTextures(1, &textTexture);
-    dge::loadTexture("resources/gfx/font.png", textTexture);
+    loadTexture("resources/gfx/font.png", textTexture);
 
     glGenVertexArrays(1, &textVAO);
     glGenBuffers(1, &textUVBuffer);
@@ -252,24 +255,24 @@ void dge::loadTextRenderer()
     glBindVertexArray(0);
 }
 
-void dge::loadDefaultShaders()
+void loadDefaultShaders()
 {
     // Load shaders
     // Line Shader
     glGenVertexArrays(1, &lineVAO);
-    lineShader = dge::loadShaderProgram("resources/shaders/line.vsh",
+    lineShader = loadShaderProgram("resources/shaders/line.vsh",
                                         "resources/shaders/line.fsh");
     glGenBuffers(1, &lineLocBuffer);
 
     // Sprite Shader
     glGenVertexArrays(1, &spriteVAO);
-    spriteShader = dge::loadShaderProgram("resources/shaders/sprite.vsh",
+    spriteShader = loadShaderProgram("resources/shaders/sprite.vsh",
                                           "resources/shaders/sprite.fsh");
     GLint spritePositionLoc = glGetAttribLocation(spriteShader, "position");
     GLint spriteTexCoordLoc = glGetAttribLocation(spriteShader, "texCoord");
 
     // Flat Color Shader
-    flatColorShader = dge::loadShaderProgram("resources/shaders/flatColor.vsh",
+    flatColorShader = loadShaderProgram("resources/shaders/flatColor.vsh",
                                              "resources/shaders/flatColor.fsh");
     // TODO: We don't need to set properties here because both spriteShader and flatColorShader have
     //       position (the only shared attribute) at location 0 (hard-specified in the shader file)
@@ -309,7 +312,7 @@ void dge::loadDefaultShaders()
     glBindVertexArray(0);
 }
 
-void dge::updateShaderCameraState(CameraState camera, GLuint shader)
+void updateShaderCamera(Camera2D camera, GLuint shader)
 {
     float screenDepth = 2.0f;
     float projectionMatrix[16] = {2.0f/camera.size.x,0,0,0,
@@ -331,38 +334,36 @@ void dge::updateShaderCameraState(CameraState camera, GLuint shader)
 // TODO: These 2 functions both assume that the window is 640x480,
 //       we really need it to use the actual window size (for now the
 //       window is not resizable)
-dge::Vector2 dge::screenToWorldPoint(CameraState camera, Vector2 point)
+Vector2 Camera2D::screenToWorldLoc(Vector2 cameraLoc)
 {
     int screenWidth = 640;
     int screenHeight = 480;
-    Vector2 result = point;
-    result.y = screenHeight - result.y;
+    Vector2 result = cameraLoc;
 
-    result.x *= camera.size.x/screenWidth;
-    result.y *= camera.size.y/screenHeight;
+    result.x *= size.x/screenWidth;
+    result.y *= size.y/screenHeight;
 
-    result += camera.position;
+    result += position;
     return result;
 }
-dge::Vector2 dge::worldToScreenPoint(CameraState camera, Vector2 point)
+Vector2 Camera2D::worldToScreenLoc(Vector2 worldLoc)
 {
     int screenWidth = 640;
     int screenHeight = 480;
-    Vector2 result = point;
-    result -= camera.position;
+    Vector2 result = worldLoc;
+    result -= position;
 
-    result.x *= screenWidth/camera.size.x;
-    result.y *= screenWidth/camera.size.y;
+    result.x *= screenWidth/size.x;
+    result.y *= screenWidth/size.y;
 
-    result.y = screenHeight - result.y;
     return result;
 }
 
-void dge::drawLine2D(CameraState camera, Vector2 fromLoc, Vector2 toLoc, Vector4 color)
+void drawLine2D(Camera2D camera, Vector2 fromLoc, Vector2 toLoc, Vector4 color)
 {
     glUseProgram(lineShader);
 
-    dge::updateShaderCameraState(camera, lineShader);
+    updateShaderCamera(camera, lineShader);
 
     GLint colorTintLoc = glGetUniformLocation(lineShader, "colorTint");
     glUniform4f(colorTintLoc, color.x, color.y, color.z, color.w);
@@ -389,10 +390,10 @@ void dge::drawLine2D(CameraState camera, Vector2 fromLoc, Vector2 toLoc, Vector4
     glUseProgram(0);
 }
 
-void dge::renderString(CameraState camera, const char* string, int length, Vector2 position, float size, Vector4 color)
+void renderString(Camera2D camera, const char* string, int length, Vector2 position, float size, Vector4 color)
 {
     glUseProgram(textShader);
-    dge::updateShaderCameraState(camera, textShader);
+    updateShaderCamera(camera, textShader);
     glBindVertexArray(textVAO);
 
     GLint colorTintLoc = glGetUniformLocation(textShader, "colorTint");
@@ -438,10 +439,10 @@ void dge::renderString(CameraState camera, const char* string, int length, Vecto
     glUseProgram(0);
 }
 
-void dge::renderQuad(CameraState camera, Vector2 centre, Vector2 size, float rotation, Vector4 color)
+void renderQuad(Camera2D camera, Vector2 centre, Vector2 size, float rotation, Vector4 color)
 {
     glUseProgram(flatColorShader);
-    dge::updateShaderCameraState(camera, flatColorShader);
+    updateShaderCamera(camera, flatColorShader);
 
     float cosTheta = cosf(rotation);
     float sinTheta = sinf(rotation);
@@ -466,11 +467,11 @@ void dge::renderQuad(CameraState camera, Vector2 centre, Vector2 size, float rot
  * Renders a sprite at the given position and size and rotation (in radians).
  * The specified colour is used to tint the sprite (use white if no tinting is desired)
 */
-void dge::renderSprite(CameraState camera, GLuint textureID, Vector2 position, float rotation, Vector2 size, Vector4 color)
+void renderSprite(Camera2D camera, GLuint textureID, Vector2 position, float rotation, Vector2 size, Vector4 color)
 {
     glUseProgram(spriteShader);
 
-    dge::updateShaderCameraState(camera, spriteShader);
+    updateShaderCamera(camera, spriteShader);
 
     float cosTheta = cosf(rotation);
     float sinTheta = sinf(rotation);
@@ -497,8 +498,10 @@ void dge::renderSprite(CameraState camera, GLuint textureID, Vector2 position, f
     glUseProgram(0);
 }
 
-void dge::renderSprite(CameraState camera, GLuint textureID, Vector2 position, float rotation, Vector2 size)
+void renderSprite(Camera2D camera, GLuint textureID, Vector2 position, float rotation, Vector2 size)
 {
     Vector4 color(1.0f, 1.0f, 1.0f, 1.0f);
-    dge::renderSprite(camera, textureID, position, rotation, size, color);
+    renderSprite(camera, textureID, position, rotation, size, color);
 }
+
+} // namespace dge

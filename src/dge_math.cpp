@@ -2,25 +2,28 @@
 
 #include <math.h>
 
+namespace dge
+{
+
 // ==============================
-// dge::Vector2 method implementations
+// Vector2 method implementations
 // ==============================
-float dge::Vector2::dot(dge::Vector2& rhs)
+float Vector2::dot(Vector2& rhs)
 {
     return x*rhs.x + y*rhs.y;
 }
 
-float dge::Vector2::sqrMagnitude()
+float Vector2::sqrMagnitude()
 {
     return x*x + y*y;
 }
 
-float dge::Vector2::magnitude()
+float Vector2::magnitude()
 {
     return sqrtf(sqrMagnitude());
 }
 
-void dge::Vector2::normalize()
+void Vector2::normalize()
 {
     float mag = magnitude();
     if(mag > 0.0f)
@@ -31,80 +34,88 @@ void dge::Vector2::normalize()
     }
 }
 
-dge::Vector2 dge::Vector2::normalized()
+Vector2 Vector2::normalized()
 {
-    dge::Vector2 result(x, y);
+    Vector2 result(x, y);
     result.normalize();
     return result;
 }
 
 // ==========================
-// dge::Vector2 operator overloads
+// Vector2 operator overloads
 // ==========================
-dge::Vector2 dge::operator +(dge::Vector2 lhs, dge::Vector2 rhs)
+Vector2 operator +(Vector2 lhs, Vector2 rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs.x + rhs.x;
     result.y = lhs.y + rhs.y;
     return result;
 }
 
-dge::Vector2 dge::operator -(dge::Vector2 lhs, dge::Vector2 rhs)
+Vector2 operator -(Vector2 lhs, Vector2 rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs.x - rhs.x;
     result.y = lhs.y - rhs.y;
     return result;
 }
 
-dge::Vector2 dge::operator -(dge::Vector2 rhs)
+Vector2 operator -(Vector2 rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = -rhs.x;
     result.y = -rhs.y;
     return result;
 }
 
-dge::Vector2 dge::operator *(dge::Vector2 lhs, float rhs)
+Vector2 operator *(Vector2 lhs, float rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs.x * rhs;
     result.y = lhs.y * rhs;
     return result;
 }
 
-dge::Vector2 dge::operator *(float lhs, dge::Vector2 rhs)
+Vector2 operator *(float lhs, Vector2 rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs * rhs.x;
     result.y = lhs * rhs.y;
     return result;
 }
 
-dge::Vector2 dge::operator *(dge::Vector2 lhs, dge::Vector2 rhs)
+Vector2 operator *(Vector2 lhs, Vector2 rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs.x * rhs.x;
     result.y = lhs.x * rhs.y;
     return result;
 }
 
-// TODO: Shouldn't these return dge::Vector2&?
-dge::Vector2 dge::operator +=(dge::Vector2& lhs, dge::Vector2 rhs)
+Vector2 operator /(Vector2 lhs, float rhs)
+{
+    Vector2 result;
+    result.x = lhs.x / rhs;
+    result.y = lhs.y / rhs;
+    return result;
+}
+
+// TODO: Shouldn't these return Vector2&?
+Vector2 operator +=(Vector2& lhs, Vector2 rhs)
 {
     lhs.x += rhs.x;
     lhs.y += rhs.y;
     return lhs;
 }
 
-dge::Vector2 dge::operator -=(dge::Vector2& lhs, dge::Vector2 rhs)
+Vector2 operator -=(Vector2& lhs, Vector2 rhs)
 {
     lhs.x -= rhs.x;
     lhs.y -= rhs.y;
     return lhs;
 }
 
-dge::Vector2 dge::operator *=(dge::Vector2& lhs, float rhs)
+Vector2 operator *=(Vector2& lhs, float rhs)
 {
     lhs.x *= rhs;
     lhs.y *= rhs;
@@ -112,82 +123,82 @@ dge::Vector2 dge::operator *=(dge::Vector2& lhs, float rhs)
 }
 
 // ===========================
-// dge::Vector2I operator overloads
+// Vector2I operator overloads
 // ===========================
-dge::Vector2I dge::operator +(dge::Vector2I lhs, dge::Vector2I rhs)
+Vector2I operator +(Vector2I lhs, Vector2I rhs)
 {
-    dge::Vector2I result;
+    Vector2I result;
     result.x = lhs.x + rhs.x;
     result.y = lhs.y + rhs.y;
     return result;
 }
 
-dge::Vector2I dge::operator -(dge::Vector2I lhs, dge::Vector2I rhs)
+Vector2I operator -(Vector2I lhs, Vector2I rhs)
 {
-    dge::Vector2I result;
+    Vector2I result;
     result.x = lhs.x - rhs.x;
     result.y = lhs.y - rhs.y;
     return result;
 }
 
-dge::Vector2I dge::operator *(dge::Vector2I lhs, int32 rhs)
+Vector2I operator *(Vector2I lhs, int32 rhs)
 {
-    dge::Vector2I result;
+    Vector2I result;
     result.x = lhs.x * rhs;
     result.y = lhs.y * rhs;
     return result;
 }
 
-dge::Vector2I dge::operator *(int32 lhs, dge::Vector2I rhs)
+Vector2I operator *(int32 lhs, Vector2I rhs)
 {
-    dge::Vector2I result;
+    Vector2I result;
     result.x = lhs * rhs.x;
     result.y = lhs * rhs.y;
     return result;
 }
 
-dge::Vector2 dge::operator *(dge::Vector2I lhs, float rhs)
+Vector2 operator *(Vector2I lhs, float rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs.x * rhs;
     result.y = lhs.y * rhs;
     return result;
 }
 
-dge::Vector2 dge::operator *(float lhs, dge::Vector2I rhs)
+Vector2 operator *(float lhs, Vector2I rhs)
 {
-    dge::Vector2 result;
+    Vector2 result;
     result.x = lhs * rhs.x;
     result.y = lhs * rhs.y;
     return result;
 }
 
-dge::Vector2I dge::operator *(dge::Vector2I lhs, dge::Vector2I rhs)
+Vector2I operator *(Vector2I lhs, Vector2I rhs)
 {
-    dge::Vector2I result;
+    Vector2I result;
     result.x = lhs.x * rhs.x;
     result.y = lhs.y * rhs.y;
     return result;
 }
 
-dge::Vector2I dge::operator +=(dge::Vector2I& lhs, dge::Vector2I rhs)
+Vector2I operator +=(Vector2I& lhs, Vector2I rhs)
 {
     lhs.x += rhs.x;
     lhs.y += rhs.y;
     return lhs;
 }
 
-bool dge::operator ==(dge::Vector2I lhs, dge::Vector2I rhs)
+bool operator ==(Vector2I lhs, Vector2I rhs)
 {
     return (lhs.x == rhs.x) && (lhs.y == rhs.y);
 }
 
 // ===========================
-// dge::Vector4 operator overloads
+// Vector4 operator overloads
 // ===========================
-dge::Vector4 dge::operator *(dge::Vector4 lhs, dge::Vector4 rhs)
+Vector4 operator *(Vector4 lhs, Vector4 rhs)
 {
-    dge::Vector4 result(lhs);
+    Vector4 result(lhs);
     result.x *= rhs.x;
     result.y *= rhs.y;
     result.z *= rhs.z;
@@ -195,7 +206,7 @@ dge::Vector4 dge::operator *(dge::Vector4 lhs, dge::Vector4 rhs)
     return result;
 }
 
-dge::Vector4 dge::operator *=(dge::Vector4& lhs, dge::Vector4 rhs)
+Vector4 operator *=(Vector4& lhs, Vector4 rhs)
 {
     lhs.x *= rhs.x;
     lhs.y *= rhs.y;
@@ -207,16 +218,16 @@ dge::Vector4 dge::operator *=(dge::Vector4& lhs, dge::Vector4 rhs)
 // ========================
 // Function implementations
 // ========================
-int dge::round(float x)
+int round(float x)
 {
     return (int)(x + 0.5f);
 }
-int dge::round(double x)
+int round(double x)
 {
     return (int)(x + 0.5);
 }
 
-float dge::clamp(float x, float min, float max)
+float clamp(float x, float min, float max)
 {
     if(x < min)
     {
@@ -229,17 +240,17 @@ float dge::clamp(float x, float min, float max)
     return x;
 }
 
-float dge::lerp(float from, float to, float t)
+float lerp(float from, float to, float t)
 {
     return (1.0f-t)*from + t*to;
 }
 
-dge::Vector2 dge::lerp(dge::Vector2 from, dge::Vector2 to, float t)
+Vector2 lerp(Vector2 from, Vector2 to, float t)
 {
     return (1.0f - t)*from + t*to;
 }
 
-int dge::sign(int x)
+int sign(int x)
 {
     int result;
     if(x > 0) result = 1;
@@ -248,7 +259,7 @@ int dge::sign(int x)
     return result;
 }
 
-float dge::signf(float x)
+float signf(float x)
 {
     float result;
     if(x > 0.0f) result = 1.0f;
@@ -257,7 +268,7 @@ float dge::signf(float x)
     return result;
 }
 
-float dge::slide(float from, float to, float maxDistance)
+float slide(float from, float to, float maxDistance)
 {
     float offset = to - from;
     float direction = signf(offset);
@@ -275,7 +286,7 @@ float dge::slide(float from, float to, float maxDistance)
     return result;
 }
 
-dge::Vector2 dge::slide(Vector2 from, Vector2 to, float maxDistance)
+Vector2 slide(Vector2 from, Vector2 to, float maxDistance)
 {
     Vector2 offset = to - from;
     Vector2 result;
@@ -291,7 +302,7 @@ dge::Vector2 dge::slide(Vector2 from, Vector2 to, float maxDistance)
     return result;
 }
 
-float dge::slideAngle(float from, float to, float maxDistance)
+float slideAngle(float from, float to, float maxDistance)
 {
     float offset = to - from;
     float topEndWrapOffset = (to + TWOPI) - from;
@@ -317,4 +328,6 @@ float dge::slideAngle(float from, float to, float maxDistance)
     }
 
     return result;
+}
+
 }

@@ -59,6 +59,7 @@ namespace dge
   Vector2 operator *(Vector2 lhs, float rhs);
   Vector2 operator *(float lhs, Vector2 rhs);
   Vector2 operator *(Vector2 lhs, Vector2 rhs);
+  Vector2 operator /(Vector2 lhs, float rhs);
 
   // TODO: Shouldn't these return Vector2&?
   Vector2 operator +=(Vector2& lhs, Vector2 rhs);
